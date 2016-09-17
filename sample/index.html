@@ -4,8 +4,43 @@
     <meta charset="UTF-8">
     <title>Document</title>
     <script src="imgLoader.min.js"></script>
+
+    <script>
+        var uploader;
+        var output;
+
+        window.onload = function(){
+            uploader = imgLoader({
+                inputId: "file-picker",
+                templates: [{
+                    id: "thumb",
+                    width: 400,
+                    height: 200,
+                    displayElementId: "thumb-preview"
+                },
+                {
+                    id: "full",
+                    width: 1200,
+                    height: 800,
+                    displayElementId: "fullsize-preview"
+                },
+                ],
+                callback: function(results){
+                    console.log(results);
+                    output = results;
+                }
+            });
+        };
+    </script>
 </head>
 <body>
+    <div>
+        <div id="thumb-preview"></div>
 
+        <label for="file-picker">Upload a photo</label>
+        <input type="file" name="file-picker" id="file-picker">
+    </div>
+
+    <div id="fullsize-preview"></div>
 </body>
 </html>
