@@ -1,23 +1,24 @@
-function imgLoader(settings){
+(function(){
 
-    var eventManager = {
-        on: function(eventName, callback){
-            this[eventName] = callback;
-            return evt;
-        }
-    };
+    window.imgLoader = imgLoader;
 
-    var evt = Object.create(eventManager);
-
-    var filePicker, stepCanvas1, stepCtx1, stepCanvas2, stepCtx2, inputFileType, results = {};
+    var evt, settings, filePicker, stepCanvas1, stepCtx1, stepCanvas2, stepCtx2, inputFileType, results = {};
     var supportedFileTypes = ["image/png", "image/jpeg", "image/gif", "image/bmp", "image/svg+xml", "image/x-icon", "image/webp"];
 
-    if (!settings.inputId || !settings.templates || (settings.templates.length < 1)){
-        return console.error("You must specify the id of a file input element and at least one job template");
-    }
+    function imgLoader(s){
+        settings = s;
 
-    filePicker = document.getElementById(settings.inputId);
-    filePicker.addEventListener("change", loadImage);
+        if (!settings.inputId || !settings.templates || (settings.templates.length < 1)){
+            return console.error("You must specify the id of a file input element and at least one job template");
+        }
+
+        evt = Object.create(eventManager);
+
+        filePicker = document.getElementById(settings.inputId);
+        filePicker.addEventListener("change", loadImage);
+
+        return evt;
+    }
 
     function loadImage(event){
 
@@ -148,7 +149,12 @@ function imgLoader(settings){
 
             return this.canvas.toDataURL(type, quality);
         }
-    };
+    }; 
 
-    return evt;
-}
+    var eventManager = {
+        on: function(eventName, callback){
+            this[eventName] = callback;
+            return evt;
+        }
+    };
+})();
