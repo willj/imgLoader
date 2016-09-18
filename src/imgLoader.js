@@ -1,6 +1,7 @@
 function imgLoader(settings){
 
-    var filePicker, stepCanvas1, stepCtx1, stepCanvas2, stepCtx2, results = {};
+    var filePicker, stepCanvas1, stepCtx1, stepCanvas2, stepCtx2, inputFileType, results = {};
+    var supportedFileTypes = ["image/png", "image/jpeg", "image/gif", "image/bmp", "image/svg+xml", "image/x-icon", "image/webp"];
 
     if (!settings.inputId || !settings.templates || (settings.templates.length < 1)){
         return console.error("You must specify the id of a file input element and at least one job template");
@@ -11,10 +12,11 @@ function imgLoader(settings){
 
     function loadImage(event){
 
-        console.log(event);
+        inputFileType = event.target.files[0].type;
 
-        // check event.target.files[0].type is valid image
-        // assign and pass through so we can save as the correct type
+        if (supportedFileTypes.indexOf(inputFileType) === -1){
+            return console.error("Unsupported file format");
+        }
 
         var reader = new FileReader();
 
@@ -52,6 +54,7 @@ function imgLoader(settings){
     function resizeImage(img, template){
         if (!results[template.id]){
             var r = Object.create(imageResult);
+            r.template = template;
             r.canvas = document.createElement("canvas");
             r.ctx = r.canvas.getContext("2d");
             if (template.displayElementId){
@@ -61,10 +64,10 @@ function imgLoader(settings){
             results[template.id] = r;
         }
 
+        results[template.id].inputType = inputFileType;
+
         var scaledSize = calcDimensions(img.width, img.height, template.width, template.height);
-
         var tempImg = img;
-
 
         // if the image is more than 2x of the target size
         if(scaledSize.width < img.width / 2){
@@ -127,8 +130,12 @@ function imgLoader(settings){
     }
 
     var imageResult = {
-        getImageData: function(){
-            return this.canvas.toDataURL("image/jpeg");
+        getImage: function(type, quality){
+            if (!type){
+                type = (this.inputType == "image/png") ? "image/png" : "image/jpeg";
+            }
+
+            return this.canvas.toDataURL(type, quality);
         }
     };
 
