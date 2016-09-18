@@ -1,5 +1,14 @@
 function imgLoader(settings){
 
+    var eventManager = {
+        on: function(eventName, callback){
+            this[eventName] = callback;
+            return evt;
+        }
+    };
+
+    var evt = Object.create(eventManager);
+
     var filePicker, stepCanvas1, stepCtx1, stepCanvas2, stepCtx2, inputFileType, results = {};
     var supportedFileTypes = ["image/png", "image/jpeg", "image/gif", "image/bmp", "image/svg+xml", "image/x-icon", "image/webp"];
 
@@ -15,7 +24,9 @@ function imgLoader(settings){
         inputFileType = event.target.files[0].type;
 
         if (supportedFileTypes.indexOf(inputFileType) === -1){
-            return console.error("Unsupported file format");
+            if (evt.error){
+                return evt.error({ id: "UNSUPPORTED_FILE_FORMAT", message: "Unsupported file format" });
+            }
         }
 
         var reader = new FileReader();
@@ -46,8 +57,8 @@ function imgLoader(settings){
             stepCanvas2.height = 0;
         }
 
-        if (settings.callback){
-            settings.callback(results);
+        if (evt.success){
+            evt.success(results);
         }
     }
 
@@ -139,4 +150,5 @@ function imgLoader(settings){
         }
     };
 
+    return evt;
 }

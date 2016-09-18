@@ -13,22 +13,23 @@
             uploader = imgLoader({
                 inputId: "file-picker",
                 templates: [{
-                    id: "thumb",
-                    width: 400,
-                    height: 200,
-                    displayElementId: "thumb-preview"
-                },
-                {
-                    id: "full",
-                    width: 1200,
-                    height: 800,
-                    displayElementId: "fullsize-preview"
-                },
-                ],
-                callback: function(results){
-                    console.log(results);
-                    output = results;
-                }
+                        id: "thumb",
+                        width: 400,
+                        height: 200,
+                        displayElementId: "thumb-preview"
+                    },
+                    {
+                        id: "full",
+                        width: 1200,
+                        height: 800,
+                        displayElementId: "fullsize-preview"
+                    }
+                ]
+            }).on("success", function(result){
+                console.log(result);  
+                output = result;
+            }).on("error", function(err){
+                alert(err.message);
             });
         };
     </script>
