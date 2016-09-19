@@ -22,6 +22,8 @@
 
     function loadImage(event){
 
+        evt.changeStatus("Loading");
+
         inputFileType = event.target.files[0].type;
 
         if (supportedFileTypes.indexOf(inputFileType) === -1){
@@ -42,6 +44,8 @@
     }
 
     function imageLoaded(event){
+        evt.changeStatus("Processing");
+
         var img = event.target;
 
         stepCanvas1 = document.createElement("canvas");
@@ -61,6 +65,8 @@
         if (evt.success){
             evt.success(results);
         }
+
+        evt.changeStatus("Done");
     }
 
     function resizeImage(img, template){
@@ -147,7 +153,7 @@
                 type = (this.inputType == "image/png") ? "image/png" : "image/jpeg";
             }
 
-            return this.canvas.toDataURL(type, quality);
+            return this.canvas.toDataURL(type, quality); 
         }
     }; 
 
@@ -155,6 +161,11 @@
         on: function(eventName, callback){
             this[eventName] = callback;
             return evt;
+        },
+        changeStatus: function changeStatus(status){
+            if (this.status){
+                this.status(status);
+            }
         }
     };
 })();

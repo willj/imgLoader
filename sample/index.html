@@ -30,16 +30,19 @@
                 output = result;
             }).on("error", function(err){
                 alert(err.message);
+            }).on("status", function(status){
+                document.getElementById("upload-status").innerText = status;
             });
         };
     </script>
 </head>
 <body>
     <div>
+        <p id="upload-status"></p>
         <div id="thumb-preview"></div>
 
         <label for="file-picker">Upload a photo</label>
-        <input type="file" name="file-picker" id="file-picker">
+        <input type="file" name="file-picker" id="file-picker" accept="image/*">
     </div>
 
     <div id="fullsize-preview"></div>
