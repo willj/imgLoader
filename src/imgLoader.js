@@ -2,7 +2,7 @@
 
     window.imgLoader = imgLoader;
 
-    var evt, settings, filePicker, stepCanvas1, stepCtx1, stepCanvas2, stepCtx2, inputFileType, results = {};
+    var evt, settings, filePicker, stepCanvas1, stepCtx1, stepCanvas2, stepCtx2, inputFile, results = {};
     var supportedFileTypes = ["image/png", "image/jpeg", "image/gif", "image/bmp", "image/svg+xml", "image/x-icon", "image/webp"];
 
     function imgLoader(s){
@@ -24,9 +24,9 @@
 
         evt.changeStatus("Loading");
 
-        inputFileType = event.target.files[0].type;
+        inputFile = event.target.files[0];
 
-        if (supportedFileTypes.indexOf(inputFileType) === -1){
+        if (supportedFileTypes.indexOf(inputFile.type) === -1){
             if (evt.error){
                 return evt.error({ id: "UNSUPPORTED_FILE_FORMAT", message: "Unsupported file format" });
             }
@@ -82,7 +82,7 @@
             results[template.id] = r;
         }
 
-        results[template.id].inputType = inputFileType;
+        results[template.id].inputFile = inputFile;
 
         var scaledSize = calcDimensions(img.width, img.height, template.width, template.height);
         var tempImg = img;
@@ -150,7 +150,7 @@
     var imageResult = {
         getImage: function(type, quality){
             if (!type){
-                type = (this.inputType == "image/png") ? "image/png" : "image/jpeg";
+                type = (this.inputFile.type == "image/png") ? "image/png" : "image/jpeg";
             }
 
             return this.canvas.toDataURL(type, quality); 
