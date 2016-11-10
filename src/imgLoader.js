@@ -84,7 +84,7 @@
 
         results[template.id].inputFile = inputFile;
 
-        var scaledSize = calcDimensions(img.width, img.height, template.width, template.height);
+        var scaledSize = calcDimensions(img.width, img.height, template.width, template.height, template.strategy);
         var tempImg = img;
 
         // if the image is more than 2x of the target size
@@ -115,7 +115,17 @@
         results[template.id].ctx.drawImage(tempImg, 0, 0, scaledSize.width, scaledSize.height);
     }
 
-    function calcDimensions(origWidth, origHeight, maxWidth, maxHeight){
+    function calcDimensions(origWidth, origHeight, targetWidth, targetHeight, method){
+        method = method || "fit";
+
+        if (method == "fit"){
+            return calcFitDimensions(origWidth, origHeight, targetWidth, targetHeight);
+        } else if (method == "minfit"){
+            return calcMinFitDimensions(origWidth, origHeight, targetWidth, targetHeight);
+        }
+    }
+
+    function calcFitDimensions(origWidth, origHeight, maxWidth, maxHeight){
         if (origWidth <= maxWidth && origHeight <= maxHeight){
             return { width: origWidth, height: origHeight };
         }
@@ -141,6 +151,34 @@
             newHeight = maxHeight;
         }
 
+        return {
+            width: newWidth,
+            height: newHeight
+        };
+    }
+
+    function calcMinFitDimensions(origWidth, origHeight, minWidth, minHeight){
+        var newWidth = origWidth;
+        var newHeight = origHeight;
+
+        if (origWidth > origHeight){
+            newWidth = (minHeight / origHeight) * origWidth;
+            newHeight = minHeight;
+        } else {
+            newWidth = minWidth;
+            newHeight = (minWidth / origWidth) * origHeight;
+        }
+        
+        if (newWidth < minWidth){
+            newWidth = minWidth;
+            newHeight = (minWidth / origWidth) * origHeight;
+        }
+
+        if (newHeight < minHeight){
+            newWidth = (minHeight / origHeight) * origWidth;
+            newHeight = minHeight;
+        }
+        
         return {
             width: newWidth,
             height: newHeight
