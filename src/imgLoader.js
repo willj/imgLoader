@@ -84,7 +84,7 @@
 
         results[template.id].inputFile = inputFile;
 
-        var scaledSize = calcDimensions(img.width, img.height, template.width, template.height, template.strategy);
+        var scaledSize = calcDimensions(img.width, img.height, template.width, template.height, template.method);
         var tempImg = img;
 
         // if the image is more than 2x of the target size
