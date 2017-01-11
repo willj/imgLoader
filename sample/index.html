@@ -2,51 +2,96 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link rel="stylesheet" href="style.css">
     <script src="imgLoader.min.js"></script>
 
     <script>
-        var uploader;
-        var output;
-
         window.onload = function(){
-            uploader = imgLoader({
+            window.uploader = imgLoader({
                 inputId: "file-picker",
                 templates: [{
                         id: "thumb",
-                        width: 400,
-                        height: 200,
+                        width: 300,
+                        height: 300,
                         displayElementId: "thumb-preview",
                         method: "fit"
                     },
                     {
                         id: "full",
                         width: 1200,
-                        height: 800,
+                        height: 1200,
                         displayElementId: "fullsize-preview",
                         method: "fit"
                     }
                 ]
             }).on("success", function(result){
                 console.log(result);  
-                output = result;
+                displaySummary(result);
             }).on("error", function(err){
                 alert(err.message);
             }).on("status", function(status){
-                document.getElementById("upload-status").innerText = status;
+                if (status == "Loading"){
+                    document.getElementById("summary").style.display = "none";
+                }
+                console.log(status);
             });
         };
+
+        function displaySummary(result){
+            var originalSize = result.full.inputFile.size;
+            var thumbSize = getImageSize(result.thumb.getImage());
+            var fullSize = getImageSize(result.full.getImage());
+            var savings = originalSize - (thumbSize + fullSize);
+
+            document.getElementById("display-size-original").innerText = bytesToKB(originalSize);
+            document.getElementById("display-size-thumb").innerText = bytesToKB(thumbSize);
+            document.getElementById("display-size-full").innerText = bytesToKB(fullSize);
+            document.getElementById("display-size-savings").innerText = bytesToKB(savings);
+
+            document.getElementById("btn-upload-add").style.display = "none";
+            document.getElementById("btn-upload-replace").style.display = "inline";
+
+            document.getElementById("summary").style.display = "block";
+        }
+
+        function bytesToKB(bytes){
+            return (bytes / 1024).toFixed(2);
+        }
+
+        function getImageSize(imageAsDataUrl){
+            return Math.round((imageAsDataUrl.length - (imageAsDataUrl.indexOf(',') + 1)) * 3/4);
+        }
+
     </script>
 </head>
 <body>
-    <div>
-        <p id="upload-status"></p>
-        <div id="thumb-preview"></div>
+    <main>
+        <h1>imgLoader Sample</h1>
+        <div class="uploader" id="uploader-wrapper">        
 
-        <label for="file-picker">Upload a photo</label>
-        <input type="file" name="file-picker" id="file-picker" accept="image/*">
-    </div>
+            <input type="file" name="file-picker" id="file-picker" accept="image/*">
+            <label for="file-picker" class="btn-upload">
+                <span id="btn-upload-add">Add photo</span>
+                <span id="btn-upload-replace" id="">Replace photo</span>
+            </label>
+
+            <div id="upload-status"></div>
+
+            <div id="thumb-preview"></div>
+
+            <div id="summary">
+                <p>Your original image is: <span id="display-size-original"></span> KB</p>
+                <p>The thumbnail (300 * 300) is: <span id="display-size-thumb"></span> KB</p>
+                <p>The fullsize image (1200 * 1200) is: <span id="display-size-full"></span> KB</p>
+                
+                <p>Saving <span id="display-size-savings"></span> KB from being uploaded</p>
+            </div>
+        </div>
+    </main>
 
     <div id="fullsize-preview"></div>
+
 </body>
 </html>
