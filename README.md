@@ -8,7 +8,7 @@ An experiment to load and resize images in the browser. It's not always the righ
 
 ## Basic usage
 
-Sample: http://www.madebywill.net/imgLoader/sample/
+Sample: https://willj.github.io/imgLoader/sample/
 
 Include the file `imgLoader.min.js` in your page, this will add a factory function `imgLoader` 
 to the global window.
